@@ -8,10 +8,11 @@ generator client {
 }
 
 model Admin {
-  id       Int    @id @default(autoincrement())
-  name     String @db.VarChar(20)
-  login    String @unique @db.VarChar(20)
-  password String @db.VarChar(255)
+  id        Int     @id @default(autoincrement())
+  name      String  @db.VarChar(20)
+  login     String  @unique @db.VarChar(20)
+  password  String  @db.VarChar(255)
+  avatarUrl String? @map("avatar_url")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

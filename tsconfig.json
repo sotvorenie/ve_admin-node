@@ -45,6 +45,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
+      "@/composables": ["src/composables/*"],
       "@routes/*": ["src/routes/*"],
       "@utils/*": ["src/utils/*"],
     }

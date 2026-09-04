@@ -7,12 +7,14 @@ import {asyncHandler} from "@utils/asyncHandler.js";
 import {registrationException, authException} from "@utils/httpExceptions.js";
 import {createJWTToken, getUser} from "@utils/auth.js";
 
+import {nameSchema} from "@/schemas/nameSchema.js";
+import {passwordSchema} from "@/schemas/passwordSchema.js";
+
 export const authRouter = Router();
 
 const authBaseSchema = z.object({
-    password: z.string(),
     login: z.string(),
-})
+}).extend(passwordSchema.shape)
 
 const authResponse = (
     res: Response,
@@ -26,9 +28,6 @@ const authResponse = (
     })
 }
 
-const nameSchema = z.object({
-    name: z.string(),
-})
 authRouter.post('/register', asyncHandler(async (req: Request, res: Response) => {
     const {login, password, name} = nameSchema.extend(authBaseSchema.shape).parse(req.body)
 
@@ -67,6 +66,7 @@ authRouter.post('/login', asyncHandler(async (req: Request, res: Response) => {
             login: true,
             password: true,
             name: true,
+            avatarUrl: true,
         }
     })
     if (!user) throw authException

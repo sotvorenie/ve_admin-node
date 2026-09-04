@@ -3,6 +3,7 @@ interface User {
     name: string
     login: string
     password: string
+    avatarUrl?: string
 }
 
 declare global {
