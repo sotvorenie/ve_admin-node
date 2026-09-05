@@ -24,7 +24,7 @@ const authResponse = (
 
     return res.status(201).jsonp({
         user: userWithoutPassword,
-        createJWTToken: createJWTToken(user.id)
+        token: createJWTToken(user.id)
     })
 }
 

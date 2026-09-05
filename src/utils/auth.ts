@@ -31,7 +31,13 @@ export const getUser = (required: boolean = true) => {
         }
 
         const user = await db.admin.findUnique({
-            where: { id: Number(payload.sub) }
+            where: { id: Number(payload.sub) },
+            select: {
+                id: true,
+                name: true,
+                login: true,
+                password: true,
+            }
         })
         if (!user && required) throw jwtException
 

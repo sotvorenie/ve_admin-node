@@ -1,4 +1,4 @@
-interface User {
+export interface User {
     id: number
     name: string
     login: string
@@ -16,5 +16,3 @@ declare global {
         }
     }
 }
-
-export {}
