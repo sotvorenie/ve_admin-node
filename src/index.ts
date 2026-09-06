@@ -5,7 +5,7 @@ import morgan from 'morgan';
 
 import {authRouter} from "@routes/auth.js";
 import {checkRouter} from "@routes/check.js";
-import {userRouter} from "@routes/user.js";
+import {userRouter} from "@routes/user/index.js";
 import {testRouter} from "@routes/test.js";
 
 const app = express()

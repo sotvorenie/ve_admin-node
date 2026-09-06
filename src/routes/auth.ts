@@ -9,6 +9,7 @@ import {createJWTToken, getUser} from "@utils/auth.js";
 
 import {nameSchema} from "@/schemas/nameSchema.js";
 import {passwordSchema} from "@/schemas/passwordSchema.js";
+import type {User} from "@/types/express.js";
 
 export const authRouter = Router();
 
@@ -18,7 +19,7 @@ const authBaseSchema = z.object({
 
 const authResponse = (
     res: Response,
-    user: { id: number; name: string; password?: string; [key: string]: any },
+    user: User,
 ) => {
     const {password, ...userWithoutPassword} = user
 
@@ -48,6 +49,12 @@ authRouter.post('/register', asyncHandler(async (req: Request, res: Response) =>
             login,
             name: name.trim(),
             password: hashedPassword
+        },
+        select: {
+            id: true,
+            name: true,
+            password: true,
+            login: true,
         }
     })
 

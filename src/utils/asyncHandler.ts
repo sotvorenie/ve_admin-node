@@ -15,9 +15,7 @@ export const asyncHandler = (fn: Function) => {
         }
         if (req.signal?.aborted) return
         try {
-            req.checkAborted()
             await fn(req, res, next)
-            req.checkAborted()
         } catch (err: any) {
             if (err?.name === 'AbortError') return
             if (err instanceof ZodError) {

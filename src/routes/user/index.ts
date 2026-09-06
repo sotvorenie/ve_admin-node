@@ -5,6 +5,8 @@ import path from "node:path";
 import fs from "node:fs/promises";
 import {db} from "@/db.js";
 
+import {deleteOldAvatar} from "@routes/user/services.js";
+
 import {ALLOWED_PHOTO_SUFFIX, AVATARS_DIRECTORY} from "@/config.js";
 
 import {uploadStorage} from "@/composables/useUploadStorage.js";
@@ -23,6 +25,7 @@ export const userRouter = Router();
 
 userRouter.patch('/redact_name', getUser(), asyncHandler(async (req: Request, res: Response) => {
     const {name} = nameSchema.parse(req.body)
+
     const currentUser = req.user!
 
     const formattedName = name.trim()
@@ -49,7 +52,7 @@ userRouter.patch('/redact_password', getUser(), asyncHandler(async (req: Request
     const formattedPassword = password.trim()
     if (!formattedPassword) throw emptyUserDataException
 
-    const check = await bcrypt.compare(password, formattedPassword)
+    const check = await bcrypt.compare(currentUser.password, formattedPassword)
     if (check) throw duplicationPasswordException
 
     const newPassword = await bcrypt.hash(formattedPassword, 10)
@@ -110,20 +113,7 @@ userRouter.post(
 
             req.checkAborted()
 
-            if (currentUser.avatarUrl) {
-                const oldAvatarName = currentUser.avatarUrl.replace('/static', '')
-                const oldAvatarPath = path.join(AVATARS_DIRECTORY, oldAvatarName)
-
-                try {
-                    await fs.unlink(oldAvatarPath)
-                } catch (err: any) {
-                    if (err.code === 'ENOENT') {
-                        console.log('Старый файл аватарки не найден, пропускаем удаление')
-                    } else {
-                        console.error('Ошибка при удалении аватарки:', err)
-                    }
-                }
-            }
+            if (currentUser.avatarUrl) await deleteOldAvatar(currentUser.avatarUrl)
 
             res.status(201).json({
                 url: newAvatarUrl,
@@ -135,5 +125,14 @@ userRouter.post(
 
             throw err
         }
+    })
+)
+
+userRouter.patch('/delete_avatar', getUser(), asyncHandler(async (req: Request, res: Response) => {
+        const currentUser = req.user!
+
+        if (currentUser.avatarUrl) await deleteOldAvatar(currentUser.avatarUrl)
+
+        return successResponse(res)
     })
 )
