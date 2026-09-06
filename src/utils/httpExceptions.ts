@@ -13,6 +13,9 @@ export const HttpError = (status: number, detail: string) => {
     return new AppError(status, detail)
 }
 
+// signal
+export const abortedException = HttpError(408, "Запрос отменен");
+
 // база данных
 export const dbException = HttpError(500, "Ошибка БД");
 
