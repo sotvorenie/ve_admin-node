@@ -49,13 +49,10 @@ userRouter.patch('/redact_password', getUser(), asyncHandler(async (req: Request
     const {password} = passwordSchema.parse(req.body)
     const currentUser = req.user!
 
-    const formattedPassword = password.trim()
-    if (!formattedPassword) throw emptyUserDataException
-
-    const check = await bcrypt.compare(currentUser.password, formattedPassword)
+    const check = await bcrypt.compare(password, currentUser.password)
     if (check) throw duplicationPasswordException
 
-    const newPassword = await bcrypt.hash(formattedPassword, 10)
+    const newPassword = await bcrypt.hash(password, 10)
 
     await db.admin.update({
         where: {
@@ -81,6 +78,13 @@ userRouter.post(
 
         const files = req.files as { [fieldname: string]: Express.Multer.File[] }
         const avatarFile = files?.avatar?.[0]
+
+        try {
+            req.checkAborted()
+        } catch (err) {
+            if (avatarFile) await fs.unlink(avatarFile.path).catch()
+            throw err
+        }
 
         if (!avatarFile) throw emptyUserDataException
 

@@ -79,7 +79,7 @@ authRouter.post('/login', asyncHandler(async (req: Request, res: Response) => {
     if (!user) throw authException
 
     const isPasswordValid = await bcrypt.compare(password, user.password)
-    if (!isPasswordValid)  throw authException
+    if (!isPasswordValid) throw authException
 
     console.log(`Админ ${user.name} авторизовался в админке`)
 

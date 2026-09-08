@@ -5,15 +5,10 @@ import {abortedException, AppError, dbException} from "@utils/httpExceptions.js"
 
 export const asyncHandler = (fn: Function) => {
     return async (req: Request, res: Response) => {
-        req.checkAborted = () => {
-            if (req.signal?.aborted) throw abortedException
-            return false
-        }
-        if (req.signal?.aborted) return
         try {
             await fn(req, res)
         } catch (err: any) {
-            if (err?.name === 'AbortError' || err === abortedException || req.signal?.aborted) return
+            if (err?.name === 'AbortError' || err === abortedException) return
             if (err instanceof ZodError) {
                 return res.status(400).json({
                     detail: "Ошибка валидации данных",

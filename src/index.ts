@@ -1,3 +1,4 @@
+import {type Request, type Response, type NextFunction} from "express";
 import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
@@ -8,12 +9,29 @@ import {checkRouter} from "@routes/check.js";
 import {userRouter} from "@routes/user/index.js";
 import {testRouter} from "@routes/test.js";
 
+import {abortedException} from "@utils/httpExceptions.js";
+
 const app = express()
 const PORT = process.env.PORT || 5000
 
 app.use(cors())
 app.use(express.json())
 app.use(morgan("dev"))
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+    const controller = new AbortController()
+    req.abortController = controller
+
+    req.checkAborted = () => {
+        if (req.abortController?.signal.aborted) throw abortedException
+    }
+
+    res.on('close', () => {
+        if (!res.writableEnded) controller.abort()
+    })
+
+    next()
+})
 
 app.use('/api/auth', authRouter)
 app.use('/api/check', checkRouter)

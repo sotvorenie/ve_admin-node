@@ -22,11 +22,7 @@ export const getUser = (required: boolean = true) => {
             }
             const token = authHeader.split(' ')[1] as string
             let payload: { sub: string }
-            try {
-                payload = jwt.verify(token, SECRET_KEY) as { sub: string }
-            } catch {
-                return res.status(jwtException.status).json({ detail: jwtException.detail })
-            }
+            payload = jwt.verify(token, SECRET_KEY) as { sub: string }
             const user = await db.admin.findUnique({
                 where: { id: Number(payload.sub) },
                 select: {
@@ -41,7 +37,7 @@ export const getUser = (required: boolean = true) => {
             if (user) req.user = user
             next()
         } catch (err) {
-            next(err)
+            return res.status(jwtException.status).json({ detail: jwtException.detail })
         }
     }
 }
