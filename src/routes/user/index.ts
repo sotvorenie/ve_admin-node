@@ -23,7 +23,7 @@ import {successResponse} from "@/responses/successResponse.js";
 
 export const userRouter = Router();
 
-userRouter.patch('/redact_name', getUser(), asyncHandler(async (req: Request, res: Response) => {
+userRouter.patch('/update_name', getUser(), asyncHandler(async (req: Request, res: Response) => {
     const {name} = nameSchema.parse(req.body)
 
     const currentUser = req.user!
@@ -45,7 +45,7 @@ userRouter.patch('/redact_name', getUser(), asyncHandler(async (req: Request, re
     return successResponse(res)
 }))
 
-userRouter.patch('/redact_password', getUser(), asyncHandler(async (req: Request, res: Response) => {
+userRouter.patch('/update_password', getUser(), asyncHandler(async (req: Request, res: Response) => {
     const {password} = passwordSchema.parse(req.body)
     const currentUser = req.user!
 
