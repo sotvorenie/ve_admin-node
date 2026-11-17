@@ -4,7 +4,7 @@ import express from 'express'
 import cors from 'cors'
 import morgan from 'morgan';
 
-import {authRouter} from "@routes/auth.js";
+import {authRouter} from "@routes/auth/auth.js";
 import {checkRouter} from "@routes/check.js";
 import {userRouter} from "@routes/user/index.js";
 import {testRouter} from "@routes/test.js";
