@@ -1,5 +1,9 @@
 import {Router, type Response, type Request} from "express";
+import bcrypt from "bcryptjs";
 import multer from 'multer';
+import path from "node:path";
+import fs from "node:fs/promises";
+import {db} from "@/db.js";
 
 import {deleteAvatar, updateName, updatePassword, uploadAvatar} from "@routes/user/services/index.js";
 import {schemas} from "@routes/user/schemas.js";
